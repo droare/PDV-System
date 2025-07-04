@@ -1,0 +1,32 @@
+# Dependencias de Node
+frontend/pdv-frontend/node_modules/
+frontend/pdv-frontend/package-lock.json
+
+# Dependencias de Java
+backend/target/
+
+# Archivos de configuración sensibles
+backend/src/main/resources/application.properties
+backend/src/main/resources/application.yml
+
+# Archivos de entorno
+.env
+
+# Archivos de bases de datos temporales
+*.sqlite
+*.db
+
+# Archivos de logs
+*.log
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración de IDE
+.vscode/
+.idea/
+*.iml
+
+database/docker-compose.yml
+
