@@ -1,1 +1,11 @@
-<router-outlet></router-outlet>
+<div class="flex min-h-screen">
+  <!-- Menú lateral -->
+  <nav class="w-56 bg-blue-900 text-white flex flex-col py-8 px-4 gap-2 shadow-lg">
+    <a routerLink="/ventas" [routerLinkActive]="'ventas-menu-active'" [routerLinkActiveOptions]="{ exact: true }" class="block py-3 px-4 rounded transition hover:bg-blue-700 font-semibold">Ventas</a>
+    <a routerLink="/productos" [routerLinkActive]="'ventas-menu-active'" [routerLinkActiveOptions]="{ exact: true }" class="block py-3 px-4 rounded transition hover:bg-blue-700 font-semibold">Productos</a>
+  </nav>
+  <!-- Contenido principal -->
+  <main class="flex-1 bg-gray-50">
+    <router-outlet></router-outlet>
+  </main>
+</div>

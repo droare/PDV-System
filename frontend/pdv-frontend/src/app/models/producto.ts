@@ -6,4 +6,5 @@ export interface Producto {
   precioCompra: number;
   precioVenta: number;
   categoriaId?: number;
+  codigoBarras: string;
 }

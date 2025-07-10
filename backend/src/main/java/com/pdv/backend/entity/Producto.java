@@ -29,6 +29,9 @@ public class Producto {
     @Column(nullable = false)
     private Integer stock;
 
+    @Column(name = "codigo_barras", unique = true)
+    private String codigoBarras;
+
     // Getters y Setters
 
     public Integer getId() {
@@ -85,5 +88,13 @@ public class Producto {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    public String getCodigoBarras() {
+        return codigoBarras;
+    }
+
+    public void setCodigoBarras(String codigoBarras) {
+        this.codigoBarras = codigoBarras;
     }
 }

@@ -1,7 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProductoService, Producto } from '../../services/producto.service';
+import { ProductoService } from '../../services/producto.service';
+import { Producto } from '../../models/producto';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-gestion-productos',
@@ -10,7 +13,7 @@ import { ProductoService, Producto } from '../../services/producto.service';
   templateUrl: './gestion-productos.component.html',
   styleUrls: ['./gestion-productos.component.css']
 })
-export class GestionProductosComponent implements OnInit {
+export class GestionProductosComponent implements OnInit, OnDestroy {
   productos: Producto[] = [];
   producto: Partial<Producto> = {};
   editando: Producto | null = null;
@@ -20,17 +23,45 @@ export class GestionProductosComponent implements OnInit {
   mostrarFormulario = false; // Nueva variable para controlar la visibilidad del formulario
   busqueda = '';
 
-  constructor(private productoService: ProductoService, private cdr: ChangeDetectorRef) {}
+  private routerSub?: Subscription;
+
+  constructor(
+    private productoService: ProductoService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.cargarProductos();
+    this.routerSub = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(event => {
+      if (this.router.url.startsWith('/productos')) {
+        this.cargarProductos();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.routerSub?.unsubscribe();
   }
 
   cargarProductos() {
     this.loading = true;
+    this.mostrarFormulario = false;
+    this.editando = null;
     this.productoService.getProductos().subscribe({
-      next: data => { this.productos = data; this.loading = false; },
-      error: err => { this.error = 'Error al cargar productos'; this.loading = false; }
+      next: data => {
+        this.productos = data;
+        this.loading = false;
+        this.cdr.detectChanges(); // Forzar refresco visual
+      },
+      error: err => {
+        console.error('Error al cargar productos:', err);
+        this.error = 'Error al cargar productos: ' + (err?.message || err?.statusText || '');
+        this.loading = false;
+        this.cdr.detectChanges(); // Forzar refresco visual
+      }
     });
   }
 
@@ -113,5 +144,10 @@ export class GestionProductosComponent implements OnInit {
       (p.nombre && p.nombre.toLowerCase().includes(filtro)) ||
       (p.descripcion && p.descripcion.toLowerCase().includes(filtro))
     );
+  }
+
+  focusSiguienteCampo() {
+    const nombreInput = document.querySelector('input[name=nombre]') as HTMLInputElement;
+    if (nombreInput) nombreInput.focus();
   }
 }

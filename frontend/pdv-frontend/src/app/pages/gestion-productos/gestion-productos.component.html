@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto p-4">
+<div class="max-w-7xl mx-auto p-4"> <!-- Cambiado max-w-4xl a max-w-7xl para tabla más ancha -->
   <h2 class="text-3xl font-bold mb-6 text-blue-700">Gestión de Productos</h2>
 
   <div *ngIf="success" class="mb-4">
@@ -19,8 +19,12 @@
   <form *ngIf="mostrarFormulario || editando" (ngSubmit)="guardarProducto()" class="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-8 border border-blue-100">
     <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
+        <label class="block text-gray-700 text-sm font-bold mb-2">Código de Barras <span class="text-red-500">*</span></label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-blue-400 focus:ring-2" [(ngModel)]="producto.codigoBarras" name="codigoBarras" required autofocus (keydown.enter)="$event.preventDefault(); focusSiguienteCampo()">
+      </div>
+      <div>
         <label class="block text-gray-700 text-sm font-bold mb-2">Nombre <span class="text-red-500">*</span></label>
-        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-blue-400 focus:ring-2" [(ngModel)]="producto.nombre" name="nombre" required>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 focus:outline-blue-400 focus:ring-2" [(ngModel)]="producto.nombre" name="nombre" required #nombreInput>
       </div>
       <div>
         <label class="block text-gray-700 text-sm font-bold mb-2">Descripción</label>
@@ -64,7 +68,7 @@
   </div>
 
   <div class="overflow-x-auto">
-    <table *ngIf="!loading && productosFiltrados.length" class="min-w-full bg-white shadow-md rounded-lg">
+    <table *ngIf="!loading && !mostrarFormulario && !editando && productosFiltrados.length" class="min-w-full bg-white shadow-md rounded-lg">
       <thead class="bg-blue-100">
         <tr>
           <th class="py-2 px-4 border-b">Nombre</th>
@@ -83,12 +87,14 @@
           <td class="py-2 px-4 border-b text-right">{{ prod.precioCompra | currency:'USD' }}</td>
           <td class="py-2 px-4 border-b text-right">{{ prod.precioVenta | currency:'USD' }}</td>
           <td class="py-2 px-4 border-b text-center">
-            <button class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-3 rounded mr-2 transition" (click)="editarProducto(prod); mostrarFormulario = true">Editar</button>
-            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded transition" (click)="eliminarProducto(prod.id)">Eliminar</button>
+            <div class="flex flex-row gap-2 justify-center"> <!-- Botones en fila -->
+              <button class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-1 px-3 rounded transition" (click)="editarProducto(prod); mostrarFormulario = true">Editar</button>
+              <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded transition" (click)="eliminarProducto(prod.id)">Eliminar</button>
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
-    <div *ngIf="!loading && !productos.length" class="text-center text-gray-500 mt-8">No hay productos registrados.</div>
+    <div *ngIf="!loading && !mostrarFormulario && !editando && !productosFiltrados.length" class="text-center text-gray-500 mt-8">No hay productos registrados.</div>
   </div>
 </div>
